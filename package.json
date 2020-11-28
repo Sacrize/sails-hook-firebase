@@ -1,0 +1,31 @@
+{
+  "name": "sails-hook-firebase",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Sacrize/sails-hook-firebase.git"
+  },
+  "sails": {
+    "isHook": true
+  },
+  "keywords": [
+    "sails",
+    "hook",
+    "firebase",
+    "admin"
+  ],
+  "author": "Jakub Paprocki",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Sacrize/sails-hook-firebase/issues"
+  },
+  "homepage": "https://github.com/Sacrize/sails-hook-firebase#readme",
+  "dependencies": {
+    "firebase-admin": "^9.4.1"
+  }
+}
