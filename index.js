@@ -22,23 +22,13 @@ module.exports = function (sails) {
         databaseURL: '',
         auth: {
           enableToken: true,
-          userModel: 'user',
-          firebaseUidAttribute: 'firebaseUid',
         }
       }
     },
     configure: function () {
-      if (!sails.models[config.auth.userModel]) {
-        sails.log.error(new Error('Not found model `'+config.auth.userModel+'`'));
-        config.auth.enableToken = false;
-      }
-      if (!sails.models[config.auth.userModel].attributes[config.auth.firebaseUidAttribute]) {
-        sails.log.error(new Error('Not found attribute `'+config.auth.firebaseUidAttribute+'` in model `'+config.auth.userModel+'`'));
-        config.auth.enableToken = false;
-      }
+      config = sails.config[this.configKey];
     },
     initialize: function () {
-      config = sails.config[this.configKey];
       sails.log.info('Initializing hook (`firebase`)');
       for (let k of Object.keys(config.serviceAccount)) {
         if (!config.serviceAccount[k]) {
@@ -64,20 +54,13 @@ module.exports = function (sails) {
             sails.log.error(new Error('Invalid authorization header'));
             return next();
           }
-          try {
-            let decodedToken = await admin.auth().verifyIdToken(temp[1]);
-            if (!decodedToken) {
-              sails.log.error(new Error('Invalid authorization token'));
-              return next();
-            }
-            let user = await sails.models[config.auth.userModel].findOne().where({ [config.auth.firebaseUidAttribute]: decodedToken.uid, });
-            if (user) {
-              req.me = user;
-              req.isJwt = true;
-            }
-          } catch (e) {
-              sails.log.error(e);
+          let decodedToken = await admin.auth().verifyIdToken(temp[1]);
+          if (!decodedToken) {
+            sails.log.error(new Error('Invalid authorization token'));
+            return next();
           }
+          req.isJWT = true;
+          req.tokenClaims = decodedToken;
           return next();
         }
       }
